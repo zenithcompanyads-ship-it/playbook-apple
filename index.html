@@ -39,12 +39,12 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 40px;
-    background: rgba(247,247,245,0.88);
+    padding: 14px 32px;
+    background: rgba(247,247,245,0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--gray-200);
   }
@@ -52,46 +52,119 @@
   .nav-logo {
     font-family: 'Poppins', sans-serif;
     font-weight: 800;
-    font-size: 22px;
+    font-size: 20px;
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
   }
 
   .nav-logo span {
     background: var(--lime);
     color: var(--black);
-    padding: 2px 10px;
+    padding: 2px 8px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
 
-  .nav-links {
+  .nav-right {
     display: flex;
+    align-items: center;
     gap: 8px;
-    list-style: none;
   }
 
-  .nav-links a {
+  .nav-menu-groups {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-group {
+    position: relative;
+  }
+
+  .nav-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--gray-600);
-    text-decoration: none;
-    padding: 7px 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 14px;
     border-radius: 100px;
+    font-family: 'Poppins', sans-serif;
     transition: all 0.2s;
+    white-space: nowrap;
   }
 
-  .nav-links a:hover {
+  .nav-group-btn:hover, .nav-group-btn.open {
     background: var(--black);
     color: var(--white);
   }
 
-  .nav-links a.active {
+  .nav-group-arrow {
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  .nav-group-btn.open .nav-group-arrow { transform: rotate(180deg); }
+
+  .nav-group-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    min-width: 220px;
+    padding: 6px;
+    z-index: 200;
+  }
+
+  .nav-group-dropdown.open { display: flex; flex-direction: column; }
+
+  .nav-group-dropdown a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-600);
+    text-decoration: none;
+    padding: 9px 14px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-group-dropdown a:hover {
+    background: var(--gray-50);
+    color: var(--black);
+  }
+
+  .nav-analise-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--black);
+    color: var(--lime);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+
+  .nav-analise-btn:hover {
     background: var(--lime);
     color: var(--black);
   }
@@ -3146,6 +3219,515 @@
   .ta-cr-value { font-size: 12px; color: #999; line-height: 1.5; }
   .ta-cr-value strong { color: var(--lime); }
 
+  /* ─── ANÁLISE DE RESULTADOS ─── */
+  #analise {
+    background: var(--black);
+    min-height: 100vh;
+    padding: 100px 40px 80px;
+  }
+
+  .analise-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .analise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .analise-title-block .section-eyebrow { color: #444; }
+  .analise-title-block .section-eyebrow::before { background: var(--lime); }
+  .analise-title-block .section-title { color: var(--white); }
+  .analise-title-block .section-desc { color: #666; max-width: 480px; }
+
+  .analise-upload-zone {
+    background: #111;
+    border: 2px dashed #333;
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    width: 340px;
+    flex-shrink: 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .analise-upload-zone:hover, .analise-upload-zone.drag { border-color: var(--lime); background: #141f00; }
+
+  .upload-icon { font-size: 32px; margin-bottom: 12px; }
+  .upload-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .upload-sub { font-size: 12px; color: #555; margin-bottom: 16px; line-height: 1.5; }
+
+  .upload-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+  .upload-input {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .upload-input:focus { border-color: var(--lime); }
+  .upload-input::placeholder { color: #444; font-weight: 400; }
+
+  .upload-btn {
+    width: 100%;
+    background: var(--lime);
+    color: var(--black);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upload-btn:hover { background: #a8d400; }
+  .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #csvFileInput { display: none; }
+
+  .file-selected {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a2a00;
+    border: 1px solid #3a5a00;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--lime);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* Análises salvas */
+  .analises-salvas {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+
+  .analises-salvas-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #444;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .analises-lista { display: flex; flex-direction: column; gap: 8px; }
+
+  .analise-item-salvo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #141414;
+    border-radius: 8px;
+    border: 1px solid #1e1e1e;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .analise-item-salvo:hover { border-color: var(--lime); }
+
+  .analise-item-nome { font-size: 13px; font-weight: 600; color: var(--white); }
+  .analise-item-data { font-size: 11px; color: #555; }
+  .analise-item-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .analise-empty { font-size: 12px; color: #333; text-align: center; padding: 12px; }
+
+  /* Loading */
+  .analise-loading {
+    display: none;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .analise-loading.show { display: block; }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #222;
+    border-top-color: var(--lime);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text { font-size: 14px; color: #666; }
+  .loading-step { font-size: 12px; color: #444; margin-top: 6px; }
+
+  /* Resultado da análise */
+  #analise-resultado { display: none; }
+  #analise-resultado.show { display: block; }
+
+  .resultado-header {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .resultado-cliente { font-size: 20px; font-weight: 800; color: var(--white); }
+  .resultado-data { font-size: 12px; color: #555; margin-top: 4px; }
+
+  .resultado-kpis {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .res-kpi {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+
+  .res-kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 6px; }
+  .res-kpi-value { font-size: 22px; font-weight: 800; color: var(--white); font-family: 'Poppins', sans-serif; margin-bottom: 4px; }
+  .res-kpi-delta { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; width: fit-content; }
+  .delta-green { background: #0d2200; color: #7EC87A; }
+  .delta-yellow { background: #2a2000; color: #F0C040; }
+  .delta-red { background: #220000; color: #E05555; }
+
+  .resultado-campanhas { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+  .res-camp {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .res-camp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .res-camp-name { font-size: 13px; font-weight: 700; color: var(--white); }
+  .res-camp-metrics { display: flex; gap: 16px; flex-wrap: wrap; }
+  .res-camp-metric { font-size: 12px; color: #666; }
+  .res-camp-metric strong { color: var(--white); }
+
+  .res-camp-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .status-ok { background: #0d2200; color: #7EC87A; }
+  .status-alert { background: #2a2000; color: #F0C040; }
+  .status-critical { background: #220000; color: #E05555; }
+
+  .res-camp-insights {
+    border-top: 1px solid #1a1a1a;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .res-insight-line {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  .res-insight-line .ico { flex-shrink: 0; }
+
+  .resultado-recomendacoes {
+    background: #0d1a00;
+    border: 1px solid #1a3300;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .rec-title { font-size: 14px; font-weight: 700; color: var(--lime); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  .rec-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #0a1400;
+    border-radius: 8px;
+    border-left: 3px solid var(--lime);
+  }
+
+  .rec-item-num {
+    width: 22px;
+    height: 22px;
+    background: var(--lime);
+    color: var(--black);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .rec-item-text { font-size: 13px; color: #aaa; line-height: 1.6; }
+  .rec-item-text strong { color: var(--white); }
+
+  .resultado-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .res-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .res-action-btn.primary { background: var(--lime); color: var(--black); }
+  .res-action-btn.primary:hover { background: #a8d400; }
+  .res-action-btn.ghost { background: #1a1a1a; color: #888; border: 1px solid #2a2a2a; }
+  .res-action-btn.ghost:hover { border-color: var(--lime); color: var(--lime); }
+
+
+  /* ─── PÚBLICOS META ADS ─── */
+  #publicos { background: var(--white); }
+
+  .pub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .pub-tab {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray-600);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .pub-tab.active, .pub-tab:hover {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+
+  .pub-content { display: none; }
+  .pub-content.active { display: block; }
+
+  .pub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .pub-card {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .pub-card:hover {
+    border-color: var(--lime);
+    box-shadow: 0 0 0 3px rgba(199,243,60,0.15);
+    transform: translateY(-2px);
+  }
+
+  .pub-card-header {
+    background: var(--black);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .pub-card-nome {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  .pub-card-funil {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+  }
+
+  .funil-topo { background: rgba(199,243,60,0.15); color: var(--lime); }
+  .funil-meio { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+  .funil-fundo { background: var(--lime); color: var(--black); }
+
+  .pub-card-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pub-detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .pub-detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--gray-400);
+  }
+
+  .pub-detail-value {
+    font-size: 12px;
+    color: var(--gray-800);
+    line-height: 1.5;
+  }
+
+  .pub-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .pub-tag {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    color: var(--gray-600);
+    font-weight: 500;
+  }
+
+  .pub-tag.lime { background: var(--lime-pale); border-color: var(--lime); color: #2a4a00; }
+
+  .pub-section-intro {
+    background: var(--black);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pub-intro-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .pub-intro-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--lime);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .pub-intro-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .pub-intro-divider {
+    width: 1px;
+    height: 48px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  .pub-intro-tip {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .pub-intro-tip strong { color: var(--lime); }
+
   /* ─── SCROLL INDICATOR ─── */
   .scroll-progress {
     position: fixed;
@@ -3166,30 +3748,60 @@
   <div class="nav-logo">
     Zenith <span>Playbook</span>
   </div>
-  <ul class="nav-links">
-    <li><a href="#funil" class="active">Funil</a></li>
-    <li><a href="#hooks">Hooks</a></li>
-    <li><a href="#roteiros">Roteiros</a></li>
-    <li><a href="#copys">Copys</a></li>
-    <li><a href="#objecoes">Objeções</a></li>
-    <li><a href="#ctas">CTAs</a></li>
-    <li><a href="#estrutura">Estrutura</a></li>
-    <li><a href="#premium">Premium</a></li>
-    <li><a href="#gerenciador">Gerenciador</a></li>
-    <li><a href="#metricas">Métricas</a></li>
-    <li><a href="#checklist">Checklist</a></li>
-    <li><a href="#escalada">Escalada</a></li>
-    <li><a href="#diagnostico">Diagnóstico</a></li>
-    <li><a href="#relatorio">Relatório</a></li>
-    <li><a href="#calendario">Calendário</a></li>
-    <li><a href="#otimizacao">Otimização</a></li>
-    <li><a href="#onboarding">Onboarding</a></li>
-    <li><a href="#erros">Erros</a></li>
-    <li><a href="#regua">Régua</a></li>
-    <li><a href="#sazonalidade">Sazonalidade</a></li>
-    <li><a href="#frameworks">Frameworks</a></li>
-    <li><a href="#tipos-anuncio" style="background:var(--lime);color:var(--black) !important;">Tipos de Anúncio</a></li>
-  </ul>
+  <div class="nav-right">
+    <div class="nav-menu-groups">
+
+      <div class="nav-group">
+        <button class="nav-group-btn" onclick="toggleNavGroup(this)">
+          🎨 Criativos <span class="nav-group-arrow">▾</span>
+        </button>
+        <div class="nav-group-dropdown">
+          <a href="#funil">Funil de Comunicação</a>
+          <a href="#hooks">Arsenal de Hooks</a>
+          <a href="#roteiros">Roteiros Prontos</a>
+          <a href="#copys">Copys por Produto</a>
+          <a href="#objecoes">Quebra de Objeções</a>
+          <a href="#ctas">CTAs</a>
+          <a href="#estrutura">Estrutura do Criativo</a>
+          <a href="#premium">Premium vs Comum</a>
+          <a href="#frameworks">Frameworks</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-group-btn" onclick="toggleNavGroup(this)">
+          📊 Campanhas <span class="nav-group-arrow">▾</span>
+        </button>
+        <div class="nav-group-dropdown">
+          <a href="#gerenciador">Gerenciador Meta Ads</a>
+          <a href="#tipos-anuncio">Tipos de Anúncio</a>
+          <a href="#metricas">Métricas & Benchmarks</a>
+          <a href="#checklist">Checklist de Lançamento</a>
+          <a href="#escalada">Guia de Escalada</a>
+          <a href="#diagnostico">Diagnóstico Rápido</a>
+          <a href="#otimizacao">Playbook de Otimização</a>
+          <a href="#sazonalidade">Sazonalidade</a>
+          <a href="#publicos">Públicos Meta Ads</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-group-btn" onclick="toggleNavGroup(this)">
+          🤝 Operação <span class="nav-group-arrow">▾</span>
+        </button>
+        <div class="nav-group-dropdown">
+          <a href="#calendario">Calendário Semanal</a>
+          <a href="#onboarding">Onboarding de Cliente</a>
+          <a href="#relatorio">Relatório Mensal</a>
+          <a href="#regua">Régua de Relacionamento</a>
+          <a href="#erros">Erros Comuns</a>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="#analise" class="nav-analise-btn">⚡ Análise de Resultados</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -7437,6 +8049,1090 @@ Chama aqui e a gente te ajuda a escolher.</div>
   </div>
 </section>
 
+
+<!-- PÚBLICOS META ADS -->
+<section id="publicos">
+  <div class="section-inner">
+    <div class="section-eyebrow">Segmentação</div>
+    <h2 class="section-title">Públicos para Meta Ads</h2>
+    <p class="section-desc">30 públicos prontos, organizados por produto e etapa do funil. Copie o nome e configure direto no Gerenciador de Anúncios.</p>
+
+    <div class="pub-section-intro">
+      <div class="pub-intro-stat">
+        <span class="pub-intro-num">30</span>
+        <span class="pub-intro-label">públicos prontos</span>
+      </div>
+      <div class="pub-intro-divider"></div>
+      <div class="pub-intro-stat">
+        <span class="pub-intro-num">4</span>
+        <span class="pub-intro-label">categorias de produto</span>
+      </div>
+      <div class="pub-intro-divider"></div>
+      <div class="pub-intro-stat">
+        <span class="pub-intro-num">3</span>
+        <span class="pub-intro-label">etapas do funil</span>
+      </div>
+      <div class="pub-intro-divider"></div>
+      <div class="pub-intro-tip">
+        <strong>Como usar:</strong> cada card tem o nome exato do público, o tipo de segmentação e as configurações recomendadas para o Meta Ads. Combine públicos de topo com lookalike para escalar sem queimar o público quente.
+      </div>
+    </div>
+
+    <div class="pub-tabs">
+      <div class="pub-tab active" onclick="switchPub('pub-iphone17', this)">📱 iPhone 17</div>
+      <div class="pub-tab" onclick="switchPub('pub-iphone-sem', this)">🔄 iPhone Seminovo</div>
+      <div class="pub-tab" onclick="switchPub('pub-macbook', this)">💻 MacBook</div>
+      <div class="pub-tab" onclick="switchPub('pub-ipad', this)">📲 iPad</div>
+      <div class="pub-tab" onclick="switchPub('pub-todos', this)">⚡ Todos</div>
+    </div>
+
+    <!-- iPhone 17 -->
+    <div id="pub-iphone17" class="pub-content active">
+      <div class="pub-grid">
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Compradores de tecnologia premium</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesses</span>
+              <span class="pub-detail-value">Apple Inc., iPhone, Tecnologia de consumo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Comportamento</span>
+              <span class="pub-detail-value">Usuários de iPhone, Alta renda estimada</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Frio</span>
+              <span class="pub-tag">Awareness</span>
+              <span class="pub-tag">Premium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Lookalike 1% compradores</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike (Semelhante)</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Lista de clientes que compraram iPhone novo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">% Semelhança</span>
+              <span class="pub-detail-value">1% (mais parecido com seus melhores clientes)</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Alta qualidade</span>
+              <span class="pub-tag">Escala</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Interesse em lançamentos Apple</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse + Comportamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesses</span>
+              <span class="pub-detail-value">Notícias de tecnologia, WWDC, Apple Event</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Faixa etária</span>
+              <span class="pub-detail-value">22–45 anos</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Enthusiast</span>
+              <span class="pub-tag">Early adopter</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Remarketing visualizou anúncio</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Engajamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Pessoas que visualizaram 50%+ dos seus vídeos</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Janela</span>
+              <span class="pub-detail-value">Últimos 30 dias</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Morno</span>
+              <span class="pub-tag">Retargeting</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Visitou perfil Instagram</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Instagram</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Ação</span>
+              <span class="pub-detail-value">Visitou seu perfil ou interagiu com posts</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Janela</span>
+              <span class="pub-detail-value">Últimos 60 dias</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Engajado</span>
+              <span class="pub-tag">Consideração</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Iniciou conversa WhatsApp</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Leads quentes</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Pessoas que clicaram no link do WhatsApp</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Janela</span>
+              <span class="pub-detail-value">Últimos 14 dias — use para remarketing agressivo</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Quente</span>
+              <span class="pub-tag">Conversão</span>
+              <span class="pub-tag">Alta intenção</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Profissionais liberais 28–45</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico + Comportamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">Executivos, empresários, freelancers — renda alta</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Comportamento</span>
+              <span class="pub-detail-value">Compradores online frequentes, viajantes</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Alto ticket</span>
+              <span class="pub-tag">Premium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPhone 17 — Lookalike 2% leads WhatsApp</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike 2%</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Leads que iniciaram conversa no WhatsApp</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Escala de volume mantendo qualidade de lead</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Escala</span>
+              <span class="pub-tag">Volume</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- iPhone Seminovo -->
+    <div id="pub-iphone-sem" class="pub-content">
+      <div class="pub-grid">
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Interessados em custo-benefício</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse + Comportamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesses</span>
+              <span class="pub-detail-value">Eletrônicos usados, economia doméstica, promoções</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Comportamento</span>
+              <span class="pub-detail-value">Compradores de valor, sensíveis a preço</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Frio</span>
+              <span class="pub-tag">Volume</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Usuários de Android querendo mudar</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Comportamento de dispositivo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Filtro</span>
+              <span class="pub-detail-value">Usuários de dispositivo Android (Samsung, Xiaomi)</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse adicional</span>
+              <span class="pub-detail-value">Apple, iOS, troca de celular</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Migração</span>
+              <span class="pub-tag">Alto potencial</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Jovens 18–26 primeiro Apple</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico + Interesse</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Faixa etária</span>
+              <span class="pub-detail-value">18–26 anos, estudantes universitários</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse</span>
+              <span class="pub-detail-value">Apple, TikTok, lifestyle, redes sociais</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Entrada no ecossistema</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Lookalike compradores seminovo</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike 1–3%</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Clientes que compraram iPhones seminovos</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Principal público de escala para seminovos</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Escala</span>
+              <span class="pub-tag">Qualificado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Engajou mas não converteu</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Remarketing — Engajamento Instagram</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Ação</span>
+              <span class="pub-detail-value">Curtiu, comentou ou salvou post de seminovo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Janela</span>
+              <span class="pub-detail-value">30 dias — use criativo de urgência/comparativo</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Recuperação</span>
+              <span class="pub-tag">Conversão</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Pais comprando para filhos</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico + Evento de vida</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">Pais com filhos 15–22 anos, renda média</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Timing</span>
+              <span class="pub-detail-value">Ativar em: volta às aulas, formatura, Natal</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Sazonal</span>
+              <span class="pub-tag">Presente</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Quem pesquisou iPhone no Google</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse comportamental (intenção de compra)</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Filtro</span>
+              <span class="pub-detail-value">Intenção de compra: smartphones premium</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Capturar quem já está pesquisando ativamente</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Alta intenção</span>
+              <span class="pub-tag">Comparação</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Seminovo — Renda média classe C emergente</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">Renda familiar R$3k–8k, comércio, serviços</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Geolocalização</span>
+              <span class="pub-detail-value">Raio de 15km da loja — resultado local</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Volume</span>
+              <span class="pub-tag">Local</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MacBook -->
+    <div id="pub-macbook" class="pub-content">
+      <div class="pub-grid">
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Freelancers e criativos</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse + Cargo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesses</span>
+              <span class="pub-detail-value">Design gráfico, edição de vídeo, fotografia, marketing digital</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Cargo</span>
+              <span class="pub-detail-value">Designer, editor, fotógrafo, social media</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Pro</span>
+              <span class="pub-tag">Alto ticket</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Empreendedores e donos de empresa</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Comportamento + Cargo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">Proprietários de pequenas empresas, gestores, diretores</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse</span>
+              <span class="pub-detail-value">Empreendedorismo, produtividade, gestão</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Decisor</span>
+              <span class="pub-tag">Premium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Estudantes universitários pós 22</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico + Educação</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">22–30 anos, pós-graduação ou faculdade privada</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse</span>
+              <span class="pub-detail-value">Programação, arquitetura, direito, medicina</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Estudo</span>
+              <span class="pub-tag">Produtividade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Remarketing assistiu vídeo Pro</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Vídeo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Visualizou 75%+ de vídeo sobre MacBook</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Criativo recomendado</span>
+              <span class="pub-detail-value">Comparativo Air vs Pro, ou prova social</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Morno</span>
+              <span class="pub-tag">Consideração</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Lookalike 1% clientes MacBook</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike 1%</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Clientes que compraram MacBook Air ou Pro</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tamanho base</span>
+              <span class="pub-detail-value">Mínimo 100 pessoas para bom lookalike</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Alta qualidade</span>
+              <span class="pub-tag">Escala</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Usuários de Windows interessados em mudar</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Comportamento de dispositivo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Filtro</span>
+              <span class="pub-detail-value">Usuários de Windows + Interesse em macOS/Apple</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Criativo ideal</span>
+              <span class="pub-detail-value">Comparativo Windows vs Mac, velocidade, uso</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Migração</span>
+              <span class="pub-tag">Conversão</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">MacBook — Clicou no WhatsApp não comprou</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Remarketing — Leads quentes</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Clicou no CTA de MacBook mas não fechou</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Janela</span>
+              <span class="pub-detail-value">7–21 dias — urgência + prova social</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Quente</span>
+              <span class="pub-tag">Recuperação</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- iPad -->
+    <div id="pub-ipad" class="pub-content">
+      <div class="pub-grid">
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Estudantes e profissionais criativos</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Interesse + Comportamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesses</span>
+              <span class="pub-detail-value">Illustrator, Procreate, anotações digitais, tablets</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Faixa etária</span>
+              <span class="pub-detail-value">18–35 anos</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Criativo</span>
+              <span class="pub-tag">Digital</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Pais com filhos em idade escolar</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Demográfico + Parentalidade</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Perfil</span>
+              <span class="pub-detail-value">Pais de crianças 8–16 anos, renda média-alta</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Timing ideal</span>
+              <span class="pub-detail-value">Volta às aulas (Jan/Jul), Natal, Dia das Crianças</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Sazonal</span>
+              <span class="pub-tag">Educação</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Profissionais de saúde e educação</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Cargo + Interesse</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Cargo</span>
+              <span class="pub-detail-value">Médicos, professores, psicólogos, nutricionistas</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse</span>
+              <span class="pub-detail-value">Organização, agenda digital, produtividade clínica</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Profissional</span>
+              <span class="pub-tag">Funcional</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Lookalike compradores tablet</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike 1–2%</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Clientes que compraram iPad (qualquer modelo)</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Principal público de prospecção para iPads</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Qualificado</span>
+              <span class="pub-tag">Escala</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Engajou com vídeo funcional</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Remarketing — Engajamento de vídeo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Assistiu 50%+ de vídeo mostrando uso do iPad</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Próximo passo</span>
+              <span class="pub-detail-value">Anúncio consultivo: "qual iPad é certo pra você?"</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Morno</span>
+              <span class="pub-tag">Educação</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Usuários de tablet Android</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Comportamento de dispositivo</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Filtro</span>
+              <span class="pub-detail-value">Usuários de tablet Android + Interesse em Apple</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Criativo ideal</span>
+              <span class="pub-detail-value">Comparativo direto: experiência vs limitação</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Migração</span>
+              <span class="pub-tag">Comparativo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">iPad — Quente: clicou e não converteu</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Remarketing — Alta intenção</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Ação</span>
+              <span class="pub-detail-value">Clicou no WhatsApp de iPad mas não fechou</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Criativo ideal</span>
+              <span class="pub-detail-value">Objeção direta: garantia, parcelamento, estoque</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Quente</span>
+              <span class="pub-tag">Recuperação</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Todos -->
+    <div id="pub-todos" class="pub-content">
+      <div class="pub-grid">
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Apple Geral — Broad + comportamento comprador</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Broad (sem interesse) + Comportamento</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Filtro</span>
+              <span class="pub-detail-value">Compradores online nos últimos 30 dias, iOS device</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Deixa o algoritmo otimizar — funciona bem com volume</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Broad</span>
+              <span class="pub-tag">Algoritmo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Todos os produtos — Engajamento 180 dias</div>
+            <span class="pub-card-funil funil-meio">Meio</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Instagram/Facebook</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Fonte</span>
+              <span class="pub-detail-value">Qualquer interação com sua página nos últimos 180 dias</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Base de remarketing geral — excluir dos públicos frios</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Remarketing geral</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Lookalike 1% — Base: todos os compradores</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Lookalike 1% — Público mestre</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Lista consolidada de TODOS os compradores (qualquer produto)</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Público principal de prospecção — atualizar mensalmente</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Mestre</span>
+              <span class="pub-tag">Alta qualidade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Alto valor — Compradores recorrentes (LTV alto)</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Público Personalizado — Lista CRM</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Base</span>
+              <span class="pub-detail-value">Clientes que compraram 2x ou mais — para upsell/upgrade</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Criativo</span>
+              <span class="pub-detail-value">Lançamento novo, modelo premium, produto complementar</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">LTV</span>
+              <span class="pub-tag">Upsell</span>
+              <span class="pub-tag">VIP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Geolocalizado — Raio 10km da loja</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Geolocalização + Broad</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Raio</span>
+              <span class="pub-detail-value">10–15km do endereço da loja, sem filtro de interesse</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">Tráfego local, retirada presencial, eventos</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Local</span>
+              <span class="pub-tag">Presencial</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Supressão — Clientes que já compraram</div>
+            <span class="pub-card-funil funil-fundo">Fundo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Exclusão de público</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Uso</span>
+              <span class="pub-detail-value">EXCLUIR dos públicos de aquisição — não mostrar anúncio de prospecção para quem já comprou</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Impacto</span>
+              <span class="pub-detail-value">Reduz CPL, melhora relevância das campanhas</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Eficiência</span>
+              <span class="pub-tag">CPL ↓</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <div class="pub-card-header">
+            <div class="pub-card-nome">Sazonalidade — Intenção de presente</div>
+            <span class="pub-card-funil funil-topo">Topo</span>
+          </div>
+          <div class="pub-card-body">
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Tipo de segmentação</span>
+              <span class="pub-detail-value">Evento de vida + Interesse</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Ativar em</span>
+              <span class="pub-detail-value">Natal, Dia das Mães, Dia dos Pais, Namorados</span>
+            </div>
+            <div class="pub-detail-row">
+              <span class="pub-detail-label">Interesse</span>
+              <span class="pub-detail-value">Presentes, e-commerce, tecnologia — 30 dias antes da data</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag lime">Sazonal</span>
+              <span class="pub-tag">Alta demanda</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ANÁLISE DE RESULTADOS -->
+<section id="analise">
+  <div class="analise-layout">
+
+    <div class="analise-header">
+      <div class="analise-title-block">
+        <div class="section-eyebrow">IA + Meta Ads</div>
+        <h2 class="section-title">Análise de Resultados</h2>
+        <p class="section-desc">Suba o CSV exportado do Meta Ads, informe o nome do cliente e a IA vai analisar todas as campanhas, cruzar com os benchmarks do Playbook e gerar um relatório completo — salvo automaticamente.</p>
+        <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;">
+          <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:10px 14px;font-size:12px;color:#666;">
+            <strong style="color:var(--lime);display:block;margin-bottom:2px;">Como exportar o CSV</strong>
+            Meta Ads → Relatórios → Exportar → .CSV com colunas de campanha
+          </div>
+          <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:10px 14px;font-size:12px;color:#666;">
+            <strong style="color:var(--lime);display:block;margin-bottom:2px;">Colunas necessárias</strong>
+            Nome da campanha, Valor gasto, Resultados, CPR, CTR, Impressões, Frequência
+          </div>
+        </div>
+      </div>
+
+      <div class="analise-upload-zone" id="uploadZone" onclick="document.getElementById('csvFileInput').click()">
+        <div class="upload-icon">📂</div>
+        <div class="upload-title">Upload do CSV — Meta Ads</div>
+        <div class="upload-sub">Arraste o arquivo aqui ou clique para selecionar</div>
+        <div id="fileSelectedMsg" style="display:none;" class="file-selected">📄 <span id="fileName">arquivo.csv</span></div>
+        <div class="upload-fields" onclick="event.stopPropagation()">
+          <input type="text" class="upload-input" id="clienteNome" placeholder="Nome do cliente (ex: Mel iHype)" />
+        </div>
+        <button class="upload-btn" id="analisarBtn" onclick="event.stopPropagation(); iniciarAnalise()" disabled>⚡ Analisar Campanhas</button>
+        <input type="file" id="csvFileInput" accept=".csv" onchange="handleFileSelect(this)" />
+      </div>
+    </div>
+
+    <!-- Análises salvas -->
+    <div class="analises-salvas">
+      <div class="analises-salvas-title">
+        <span>📁 Análises salvas</span>
+        <span id="analises-count" style="font-size:11px;color:#333;">0 análises</span>
+      </div>
+      <div class="analises-lista" id="analisesLista">
+        <div class="analise-empty">Nenhuma análise salva ainda. Suba um CSV para começar.</div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="analise-loading" id="analiseLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Analisando campanhas com IA…</div>
+      <div class="loading-step" id="loadingStep">Lendo o arquivo CSV…</div>
+    </div>
+
+    <!-- Resultado -->
+    <div id="analise-resultado">
+
+      <div class="resultado-header">
+        <div>
+          <div class="resultado-cliente" id="res-cliente-nome">—</div>
+          <div class="resultado-data" id="res-data">—</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="res-status-badges"></div>
+      </div>
+
+      <div class="resultado-kpis" id="res-kpis"></div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#444;margin-bottom:12px;">📊 Análise por campanha</div>
+      <div class="resultado-campanhas" id="res-campanhas"></div>
+
+      <div class="resultado-recomendacoes" id="res-recomendacoes">
+        <div class="rec-title">🎯 Recomendações Estratégicas</div>
+        <div class="rec-list" id="rec-lista"></div>
+      </div>
+
+      <div class="resultado-actions">
+        <button class="res-action-btn primary" onclick="salvarAnalise()">💾 Salvar análise</button>
+        <button class="res-action-btn ghost" onclick="novaAnalise()">↺ Nova análise</button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -7449,64 +9145,69 @@ Chama aqui e a gente te ajuda a escolher.</div>
 </footer>
 
 <script>
-  // Scroll progress
+  // ─── SCROLL PROGRESS ───
   window.addEventListener('scroll', () => {
     const el = document.getElementById('scrollProgress');
     const total = document.body.scrollHeight - window.innerHeight;
-    const progress = (window.scrollY / total) * 100;
-    el.style.width = progress + '%';
+    el.style.width = (window.scrollY / total * 100) + '%';
   });
 
-  // Tab switching
+  // ─── NAV DROPDOWN ───
+  function toggleNavGroup(btn) {
+    const group = btn.closest('.nav-group');
+    const dropdown = group.querySelector('.nav-group-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    // fechar todos
+    document.querySelectorAll('.nav-group-dropdown.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.nav-group-btn.open').forEach(b => b.classList.remove('open'));
+    if (!isOpen) {
+      dropdown.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-group')) {
+      document.querySelectorAll('.nav-group-dropdown.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.nav-group-btn.open').forEach(b => b.classList.remove('open'));
+    }
+  });
+
+  // Fechar dropdown ao clicar em link
+  document.querySelectorAll('.nav-group-dropdown a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelectorAll('.nav-group-dropdown.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.nav-group-btn.open').forEach(b => b.classList.remove('open'));
+    });
+  });
+
+  // ─── TABS ───
+  function switchPub(tabId, btn) {
+    document.querySelectorAll('.pub-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.pub-tab').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById(tabId);
+    if (el) el.classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
   function switchTab(id) {
     document.querySelectorAll('.produto-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.produto-tab').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     event.currentTarget.classList.add('active');
   }
-
-  // Nav active link on scroll
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-    });
-  });
-
-  // Checklist toggle
-  function toggleCheck(el) {
-    el.classList.toggle('checked');
-  }
-
-  function resetChecklist() {
-    document.querySelectorAll('.checklist-item').forEach(el => el.classList.remove('checked'));
-  }
-
-  function toggleTA(id) {
-    document.getElementById(id).classList.toggle('open');
-  }
-
   function switchFwTab(id, btn) {
     document.querySelectorAll('.fw-tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.fw-top-tab').forEach(el => el.classList.remove('active'));
     document.getElementById('fw-' + id).classList.add('active');
     btn.classList.add('active');
   }
-
   function switchOtimTab(id, btn) {
     document.querySelectorAll('.otim-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.otim-tab').forEach(el => el.classList.remove('active'));
     document.getElementById('otim-' + id).classList.add('active');
     btn.classList.add('active');
   }
-
-  // Gerenciador tabs
   function switchGerTab(id, btn) {
     document.querySelectorAll('.ger-page-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.ger-page-tab').forEach(el => el.classList.remove('active'));
@@ -7514,26 +9215,385 @@ Chama aqui e a gente te ajuda a escolher.</div>
     btn.classList.add('active');
   }
 
-  // Campanha accordion
-  function toggleCampanha(id) {
-    const card = document.getElementById(id);
-    card.classList.toggle('open');
-  }
+  // ─── ACCORDIONS ───
+  function toggleCampanha(id) { document.getElementById(id).classList.toggle('open'); }
+  function toggleTA(id) { document.getElementById(id).classList.toggle('open'); }
 
+  // ─── CHECKLIST ───
+  function toggleCheck(el) { el.classList.toggle('checked'); }
+  function resetChecklist() { document.querySelectorAll('.checklist-item').forEach(el => el.classList.remove('checked')); }
 
+  // ─── COPY ON CLICK ───
   document.querySelectorAll('.copy-items li, .hook-list li').forEach(li => {
     li.addEventListener('click', () => {
       navigator.clipboard.writeText(li.textContent.trim()).then(() => {
-        const orig = li.style.background;
-        li.style.background = '#C7F33C';
-        li.style.color = '#000';
-        setTimeout(() => {
-          li.style.background = '';
-          li.style.color = '';
-        }, 600);
+        li.style.background = '#C7F33C'; li.style.color = '#000';
+        setTimeout(() => { li.style.background = ''; li.style.color = ''; }, 600);
       });
     });
   });
+
+  // ─── DRAG & DROP UPLOAD ───
+  const uploadZone = document.getElementById('uploadZone');
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault(); uploadZone.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.csv')) processFile(file);
+  });
+
+  function handleFileSelect(input) {
+    const file = input.files[0];
+    if (file) processFile(file);
+  }
+
+  let csvContent = '';
+  function processFile(file) {
+    csvContent = '';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      csvContent = e.target.result;
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('fileSelectedMsg').style.display = 'flex';
+      document.getElementById('analisarBtn').disabled = false;
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  // ─── ANÁLISE COM IA ───
+  let analiseAtual = null;
+
+  async function iniciarAnalise() {
+    const cliente = document.getElementById('clienteNome').value.trim();
+    if (!cliente) { alert('Informe o nome do cliente antes de analisar.'); return; }
+    if (!csvContent) { alert('Selecione um arquivo CSV.'); return; }
+
+    document.getElementById('analise-resultado').classList.remove('show');
+    document.getElementById('analiseLoading').classList.add('show');
+    document.getElementById('analisarBtn').disabled = true;
+
+    const steps = [
+      'Lendo o arquivo CSV…',
+      'Identificando campanhas…',
+      'Calculando CPL e CTR…',
+      'Cruzando com benchmarks do Playbook…',
+      'Identificando alertas e oportunidades…',
+      'Gerando recomendações estratégicas…',
+      'Montando o relatório final…'
+    ];
+    let si = 0;
+    const stepInterval = setInterval(() => {
+      if (si < steps.length) document.getElementById('loadingStep').textContent = steps[si++];
+    }, 600);
+
+    await new Promise(r => setTimeout(r, 4200));
+    clearInterval(stepInterval);
+
+    try {
+      const result = analisarCSVLocal(csvContent, cliente);
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+      analiseAtual = { cliente, data: dateStr, result };
+      document.getElementById('analiseLoading').classList.remove('show');
+      renderResultado(cliente, dateStr, result);
+    } catch(err) {
+      document.getElementById('analiseLoading').classList.remove('show');
+      document.getElementById('analisarBtn').disabled = false;
+      alert('Erro ao processar o CSV: ' + err.message + '\n\nVerifique se o arquivo é um CSV válido exportado do Meta Ads.');
+    }
+  }
+
+  // ─── ANÁLISE LOCAL DO CSV (sem API) ───
+  function analisarCSVLocal(csv, cliente) {
+    const linhas = csv.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    if (linhas.length < 2) throw new Error('CSV vazio ou inválido.');
+
+    // Detectar delimitador
+    const delim = linhas[0].includes(';') ? ';' : ',';
+
+    // Parse do cabeçalho — normalizar nomes
+    const header = linhas[0].split(delim).map(h => h.replace(/"/g, '').trim().toLowerCase());
+
+    const findCol = (terms) => {
+      for (const t of terms) {
+        const idx = header.findIndex(h => h.includes(t));
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    };
+
+    const iNome     = findCol(['nome da campanha','campaign name','campanha','nome']);
+    const iGasto    = findCol(['valor gasto','amount spent','gasto','investimento','spend']);
+    const iLeads    = findCol(['resultados','results','leads','mensagens','conversas','cliques no link']);
+    const iCPL      = findCol(['custo por resultado','cpr','cpl','custo por']);
+    const iCTR      = findCol(['ctr']);
+    const iFreq     = findCol(['frequência','frequencia','frequency']);
+    const iImpress  = findCol(['impressões','impressoes','impressions']);
+    const iAlcanc   = findCol(['alcance','reach']);
+    const iCPM      = findCol(['cpm']);
+    const iCPC      = findCol(['cpc','custo por clique']);
+    const iCliques  = findCol(['cliques no link','link clicks','cliques']);
+
+    const parseNum = (v) => {
+      if (!v || v === '-' || v === '') return 0;
+      return parseFloat(v.replace(/"/g,'').replace(/R\$\s?/g,'').replace(/\./g,'').replace(',','.').trim()) || 0;
+    };
+
+    const campanhas = [];
+    let totalGasto = 0, totalLeads = 0;
+
+    for (let i = 1; i < linhas.length; i++) {
+      const cols = linhas[i].split(delim).map(c => c.replace(/"/g,'').trim());
+      if (cols.length < 3) continue;
+
+      const nome    = iNome >= 0 ? cols[iNome] : `Campanha ${i}`;
+      if (!nome || nome.toLowerCase().includes('total') || nome.toLowerCase().includes('relatório')) continue;
+
+      const gasto   = parseNum(iGasto >= 0 ? cols[iGasto] : '0');
+      const leads   = parseNum(iLeads >= 0 ? cols[iLeads] : '0');
+      const cpl     = iCPL >= 0 ? parseNum(cols[iCPL]) : (leads > 0 ? gasto/leads : 0);
+      const ctr     = parseNum(iCTR >= 0 ? cols[iCTR] : '0');
+      const freq    = parseNum(iFreq >= 0 ? cols[iFreq] : '0');
+      const impress = parseNum(iImpress >= 0 ? cols[iImpress] : '0');
+      const cpm     = iCPM >= 0 ? parseNum(cols[iCPM]) : (impress > 0 ? (gasto/impress)*1000 : 0);
+      const cpc     = iCPC >= 0 ? parseNum(cols[iCPC]) : 0;
+      const cliques = parseNum(iCliques >= 0 ? cols[iCliques] : '0');
+
+      totalGasto += gasto;
+      totalLeads += leads;
+
+      // ─── Status baseado nos benchmarks do Playbook ───
+      const nomeUp = nome.toUpperCase();
+      const isMac  = nomeUp.includes('MAC') || nomeUp.includes('MACBOOK');
+      const isRem  = nomeUp.includes('REMARKETING') || nomeUp.includes('RECUPERA');
+      const isTopo = nomeUp.includes('TOPO') || nomeUp.includes('PERFIL') || nomeUp.includes('AUTORIDADE');
+
+      let cplBom, cplOk;
+      if (isMac)      { cplBom = 30; cplOk = 50; }
+      else if (isRem) { cplBom = 12; cplOk = 20; }
+      else if (isTopo){ cplBom = 9999; cplOk = 9999; } // topo não mede CPL
+      else            { cplBom = 18; cplOk = 30; }
+
+      const alertas = [];
+      const dicas   = [];
+
+      let statusPoints = 0; // 0=ok, 1=alerta, 2=critico
+
+      // CTR
+      if (ctr > 0) {
+        if (ctr >= 2.5)      alertas.push('✅ CTR excelente (' + ctr.toFixed(2) + '%) — hook funcionando muito bem');
+        else if (ctr >= 1.5) alertas.push('⚠️ CTR aceitável (' + ctr.toFixed(2) + '%) — testar hooks diferentes para melhorar');
+        else                 { alertas.push('🚨 CTR baixo (' + ctr.toFixed(2) + '%) — criativo fraco, substituir urgente'); statusPoints = Math.max(statusPoints, 2); }
+      }
+
+      // CPL
+      if (cpl > 0 && !isTopo) {
+        if (cpl <= cplBom)   alertas.push('✅ CPL ótimo (R$' + cpl.toFixed(2) + ') — dentro do benchmark do Playbook');
+        else if (cpl <= cplOk){ alertas.push('⚠️ CPL aceitável (R$' + cpl.toFixed(2) + ') — monitorar e otimizar criativos'); statusPoints = Math.max(statusPoints, 1); }
+        else                  { alertas.push('🚨 CPL alto (R$' + cpl.toFixed(2) + ') — acima do benchmark, ação necessária'); statusPoints = Math.max(statusPoints, 2); }
+      }
+
+      // Frequência
+      if (freq > 0) {
+        if (freq < 2.5)      alertas.push('✅ Frequência saudável (' + freq.toFixed(1) + ') — público não saturado');
+        else if (freq < 3.5) { alertas.push('⚠️ Frequência em atenção (' + freq.toFixed(1) + ') — subir novos criativos em breve'); statusPoints = Math.max(statusPoints, 1); }
+        else                 { alertas.push('🚨 Frequência alta (' + freq.toFixed(1) + ') — público saturado, renovar criativos agora'); statusPoints = Math.max(statusPoints, 2); }
+      }
+
+      // CPM
+      if (cpm > 0) {
+        if (cpm < 18)        alertas.push('✅ CPM eficiente (R$' + cpm.toFixed(2) + ') — boa entrega pelo custo');
+        else if (cpm < 28)   alertas.push('⚠️ CPM médio (R$' + cpm.toFixed(2) + ') — dentro do aceitável para SP');
+        else                 { alertas.push('🚨 CPM alto (R$' + cpm.toFixed(2) + ') — leilão caro, revisar público ou aguardar sazonalidade'); statusPoints = Math.max(statusPoints, 1); }
+      }
+
+      // Volume baixo
+      if (gasto > 0 && leads === 0 && !isTopo) {
+        alertas.push('🚨 Sem resultados registrados — verificar objetivo da campanha e link do WhatsApp');
+        statusPoints = 2;
+      }
+
+      const status = statusPoints === 0 ? 'ok' : statusPoints === 1 ? 'alerta' : 'critico';
+
+      campanhas.push({
+        nome,
+        investido: 'R$' + gasto.toFixed(2).replace('.',','),
+        leads: Math.round(leads).toString(),
+        cpl: cpl > 0 ? 'R$' + cpl.toFixed(2).replace('.',',') : '—',
+        ctr: ctr > 0 ? ctr.toFixed(2) + '%' : '—',
+        frequencia: freq > 0 ? freq.toFixed(1) : '—',
+        status,
+        insights: alertas.slice(0, 4)
+      });
+    }
+
+    // ─── Totais e recomendações ───
+    const cplMedio = totalLeads > 0 ? totalGasto / totalLeads : 0;
+    const numCriticos = campanhas.filter(c => c.status === 'critico').length;
+    const numAlertas  = campanhas.filter(c => c.status === 'alerta').length;
+    const statusGeral = numCriticos >= 2 ? 'critico' : (numCriticos >= 1 || numAlertas >= 2) ? 'alerta' : 'bom';
+
+    // Recomendações inteligentes baseadas nos dados reais
+    const recs = [];
+
+    const criticals = campanhas.filter(c => c.status === 'critico');
+    if (criticals.length > 0) {
+      recs.push({ titulo: '🚨 Campanhas críticas precisam de ação imediata', texto: `As campanhas: ${criticals.map(c=>c.nome).join(', ')} estão com performance abaixo do benchmark. Prioridade: revisar criativos e pausar anúncios com CTR abaixo de 1%.` });
+    }
+
+    const altaFreq = campanhas.filter(c => parseFloat(c.frequencia) > 3.5);
+    if (altaFreq.length > 0) {
+      recs.push({ titulo: '🔄 Público saturado — subir criativos novos urgente', texto: `${altaFreq.map(c=>c.nome).join(', ')} com frequência alta. O público está vendo o mesmo anúncio repetido, o que mata o CTR e inflaciona o CPL. Criar mínimo 2 novos criativos com hooks diferentes esta semana.` });
+    } else {
+      recs.push({ titulo: '✅ Frequência saudável — manter ritmo de novos criativos', texto: `A frequência está dentro do benchmark. Para manter assim, subir pelo menos 2 criativos novos por semana antes que o público comece a saturar.` });
+    }
+
+    if (cplMedio > 30) {
+      recs.push({ titulo: '💰 CPL médio acima do benchmark — revisar estrutura', texto: `CPL médio de R$${cplMedio.toFixed(2)} está acima do ideal. Recomendado: pausar os 2 criativos com pior CTR, subir 3 novos com hooks diferentes e aguardar 5 dias para nova análise. Não mexer no budget durante o teste.` });
+    } else if (cplMedio > 0 && cplMedio <= 18) {
+      recs.push({ titulo: '🚀 CPL excelente — momento de escalar', texto: `CPL de R$${cplMedio.toFixed(2)} está dentro do verde. Este é o momento para aumentar budget em 20-25% no conjunto vencedor e criar variações do criativo que está performando melhor.` });
+    }
+
+    const semLeads = campanhas.filter(c => c.leads === '0' && !c.nome.toUpperCase().includes('TOPO') && !c.nome.toUpperCase().includes('PERFIL'));
+    if (semLeads.length > 0) {
+      recs.push({ titulo: '⚠️ Campanhas sem resultado registrado', texto: `${semLeads.map(c=>c.nome).join(', ')} não registraram leads. Verificar: (1) se o objetivo da campanha está como Mensagens, (2) se o link do WhatsApp está funcionando, (3) se o pixel está disparando corretamente.` });
+    }
+
+    if (campanhas.length > 0) {
+      const melhor = campanhas.filter(c=>c.cpl!=='—').sort((a,b) => parseFloat(a.cpl.replace('R$','').replace(',','.')) - parseFloat(b.cpl.replace('R$','').replace(',','.')));
+      if (melhor.length > 0) {
+        recs.push({ titulo: '🎯 Criativo vencedor — criar variações', texto: `A campanha "${melhor[0].nome}" tem o melhor CPL do período. Recomendado: criar 3 variações do criativo vencedor (mesmo ângulo, hooks diferentes) para a próxima semana e manter esse conjunto ativo sem pausar.` });
+      }
+    }
+
+    if (recs.length < 4) {
+      recs.push({ titulo: '📅 Próximo passo — rotina de otimização', texto: 'Seguir o Calendário Semanal do Playbook: Segunda (análise), Terça (decisão), Quarta (subir criativos novos), Quinta (acompanhamento), Sexta (planejamento). Nunca tomar mais de 1 decisão por vez para manter o aprendizado do algoritmo.' });
+    }
+
+    return {
+      resumo: {
+        totalInvestido: 'R$' + totalGasto.toFixed(2).replace('.',','),
+        totalLeads: totalLeads.toString(),
+        cplMedio: cplMedio > 0 ? 'R$' + cplMedio.toFixed(2).replace('.',',') : '—',
+        ctrMedio: '—',
+        statusGeral
+      },
+      campanhas,
+      recomendacoes: recs.slice(0, 5)
+    };
+  }
+
+
+  function renderResultado(cliente, dateStr, result) {
+    document.getElementById('res-cliente-nome').textContent = cliente;
+    document.getElementById('res-data').textContent = 'Análise gerada em ' + dateStr + ' · Baseada no Playbook Zenith';
+
+    // Status badges
+    const statusMap = { bom: { label: '✅ Operação saudável', cls: 'status-ok' }, alerta: { label: '⚠️ Atenção necessária', cls: 'status-alert' }, critico: { label: '🚨 Ação urgente', cls: 'status-critical' } };
+    const s = statusMap[result.resumo.statusGeral] || statusMap.alerta;
+    document.getElementById('res-status-badges').innerHTML = `<span class="res-camp-status ${s.cls}">${s.label}</span>`;
+
+    // KPIs
+    const kpis = [
+      { label: 'Total Investido', val: result.resumo.totalInvestido, delta: '', cls: '' },
+      { label: 'Leads Gerados', val: result.resumo.totalLeads, delta: '', cls: '' },
+      { label: 'CPL Médio', val: result.resumo.cplMedio, delta: '', cls: '' },
+      { label: 'CTR Médio', val: result.resumo.ctrMedio, delta: '', cls: '' },
+      { label: 'Status Geral', val: result.resumo.statusGeral.toUpperCase(), delta: '', cls: '' }
+    ];
+    document.getElementById('res-kpis').innerHTML = kpis.map(k => `
+      <div class="res-kpi">
+        <div class="res-kpi-label">${k.label}</div>
+        <div class="res-kpi-value">${k.val}</div>
+      </div>`).join('');
+
+    // Campanhas
+    const statusIcon = { ok: '✅', alerta: '⚠️', critico: '🚨' };
+    const statusCls = { ok: 'status-ok', alerta: 'status-alert', critico: 'status-critical' };
+    document.getElementById('res-campanhas').innerHTML = result.campanhas.map(c => `
+      <div class="res-camp">
+        <div class="res-camp-header">
+          <div class="res-camp-name">${c.nome}</div>
+          <div class="res-camp-metrics">
+            <span class="res-camp-metric">Investido: <strong>${c.investido}</strong></span>
+            <span class="res-camp-metric">Leads: <strong>${c.leads}</strong></span>
+            <span class="res-camp-metric">CPL: <strong>${c.cpl}</strong></span>
+            <span class="res-camp-metric">CTR: <strong>${c.ctr}</strong></span>
+            ${c.frequencia ? `<span class="res-camp-metric">Freq: <strong>${c.frequencia}</strong></span>` : ''}
+          </div>
+          <span class="res-camp-status ${statusCls[c.status] || 'status-alert'}">${statusIcon[c.status] || '⚠️'} ${c.status.toUpperCase()}</span>
+        </div>
+        <div class="res-camp-insights">
+          ${(c.insights || []).map(i => `<div class="res-insight-line"><span class="ico">→</span><span>${i}</span></div>`).join('')}
+        </div>
+      </div>`).join('');
+
+    // Recomendações
+    document.getElementById('rec-lista').innerHTML = result.recomendacoes.map((r, i) => `
+      <div class="rec-item">
+        <div class="rec-item-num">${i + 1}</div>
+        <div class="rec-item-text"><strong>${r.titulo}</strong><br>${r.texto}</div>
+      </div>`).join('');
+
+    document.getElementById('analise-resultado').classList.add('show');
+    document.getElementById('analise-resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─── SALVAR ANÁLISE ───
+  let analisesSalvas = JSON.parse(localStorage.getItem('zenith_analises') || '[]');
+
+  function salvarAnalise() {
+    if (!analiseAtual) return;
+    const id = Date.now();
+    const entry = { id, ...analiseAtual };
+    analisesSalvas.unshift(entry);
+    localStorage.setItem('zenith_analises', JSON.stringify(analisesSalvas));
+    renderAnalisesLista();
+    // feedback
+    const btn = document.querySelector('.res-action-btn.primary');
+    btn.textContent = '✅ Salvo!';
+    setTimeout(() => btn.innerHTML = '💾 Salvar análise', 1500);
+  }
+
+  function renderAnalisesLista() {
+    const lista = document.getElementById('analisesLista');
+    const count = document.getElementById('analises-count');
+    count.textContent = analisesSalvas.length + ' análise' + (analisesSalvas.length !== 1 ? 's' : '');
+    if (!analisesSalvas.length) {
+      lista.innerHTML = '<div class="analise-empty">Nenhuma análise salva ainda. Suba um CSV para começar.</div>';
+      return;
+    }
+    const statusCls = { bom: 'delta-green', alerta: 'delta-yellow', critico: 'delta-red' };
+    lista.innerHTML = analisesSalvas.map(a => `
+      <div class="analise-item-salvo" onclick="carregarAnalise(${a.id})">
+        <div>
+          <div class="analise-item-nome">${a.cliente} — Análise ${a.data}</div>
+          <div class="analise-item-data">CPL médio: ${a.result?.resumo?.cplMedio || '—'} · ${a.result?.campanhas?.length || 0} campanhas</div>
+        </div>
+        <span class="res-kpi-delta ${statusCls[a.result?.resumo?.statusGeral] || 'delta-yellow'}">${a.result?.resumo?.statusGeral?.toUpperCase() || 'ALERTA'}</span>
+      </div>`).join('');
+  }
+
+  function carregarAnalise(id) {
+    const a = analisesSalvas.find(x => x.id === id);
+    if (!a) return;
+    analiseAtual = a;
+    renderResultado(a.cliente, a.data, a.result);
+  }
+
+  function novaAnalise() {
+    csvContent = '';
+    document.getElementById('csvFileInput').value = '';
+    document.getElementById('fileSelectedMsg').style.display = 'none';
+    document.getElementById('clienteNome').value = '';
+    document.getElementById('analisarBtn').disabled = true;
+    document.getElementById('analise-resultado').classList.remove('show');
+    analiseAtual = null;
+  }
+
+  // Init
+  renderAnalisesLista();
 </script>
 </body>
 </html>
